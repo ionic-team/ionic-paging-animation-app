@@ -1,5 +1,7 @@
-import {Component, ElementRef, Input, NgZone, QueryList, SimpleChange, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, NgZone, Output, QueryList, SimpleChange, ViewChild, ViewChildren} from '@angular/core';
 import {Animation} from 'ionic-angular';
+
+import {ANIMATION_DURATION} from '../utils/constants';
 
 @Component({
   selector: `paging-component`,
@@ -9,7 +11,7 @@ import {Animation} from 'ionic-angular';
         <div class="paging-circle-wrapper" #pagingCircleWrapperElements>
           <div class="paging-circle">
             <div class="inner-circle">
-              <ion-icon [ios]="pageObject.iconName" [md]="pageObject.iconName" class="paging-icon"></ion-icon>
+              <ion-icon [name]="pageObject.iconName" class="paging-icon" [class.blue-text]="i === 0" [class.green-text]="i === 1" [class.purple-text]="i === 2"></ion-icon>
             </div>
           </div>
         </div>
@@ -20,11 +22,14 @@ import {Animation} from 'ionic-angular';
 export class PagingComponent {
   @Input() pages: PageObject[];
   @Input() selectedIndex: number;
-  @Input() previousIndex: number;
+
+  @Output() pageChangeStart: EventEmitter<PageChangedEvent> = new EventEmitter<PageChangedEvent>();
+  @Output() pageChangeComplete: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('container', {read: ElementRef}) container: ElementRef;
   @ViewChildren('pagingCircleWrapperElements', {read: ElementRef}) queryList: QueryList<ElementRef>;
 
+  private previousIndex: number;
   private currentAmountShiftedInPx: number = 0;
   private initialized: boolean = false;
 
@@ -34,17 +39,19 @@ export class PagingComponent {
   }
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
-    for ( let propName in changes ) {
-      if ( propName === 'selectedIndex' ){
-        // start animation logic
-        if ( this.initialized ) {
-          let callback = () => {
-            console.log("Animation complete");
-          };
-          this.selectedIndexChanged(changes[propName].currentValue, callback, true);
-        }
+    let self = this;
+    let change = changes['selectedIndex'];
+    if ( change ) {
+      this.previousIndex = change.previousValue;
+      // start animation logic
+      if ( this.initialized ) {
+        let callback = () => {
+          self.pageChangeComplete.emit(null);
+        };
+        this.selectedIndexChanged(change.currentValue, callback, true);
       }
     }
+
   }
 
   ngAfterViewInit(){
@@ -52,7 +59,6 @@ export class PagingComponent {
     setTimeout( () => {
       let callback = () => {
         this.ngZone.run( () => {
-          console.log("Init callback fired");
           this.initialized = true;
         });
       };
@@ -73,7 +79,7 @@ export class PagingComponent {
       parentAnimation.add(childAnimation);
     }
     if ( doAnimation ){
-        parentAnimation.duration(200);
+        parentAnimation.duration(ANIMATION_DURATION);
     }
     if ( callback ){
       parentAnimation.onFinish(callback);
@@ -83,7 +89,7 @@ export class PagingComponent {
 
   buildChildAnimation(selectedIndex: number, currentIndex:number, pagingCircleWrapperRef:ElementRef, originalOffset:number, newOffset:number){
     let animation = new Animation(pagingCircleWrapperRef.nativeElement);
-    let circleElement = pagingCircleWrapperRef.nativeElement.children[0];
+    let circleElement = <HTMLElement> pagingCircleWrapperRef.nativeElement.children[0];
     let innerCircleElement = circleElement.children[0];
     let circleAnimation = new Animation(circleElement);
     let innerCircleAnimation = new Animation(innerCircleElement);
@@ -93,6 +99,12 @@ export class PagingComponent {
       innerCircleAnimation.fromTo('opacity', '0.0', '1.0');
       circleAnimation.fromTo('height', `${SMALL_CIRCLE_DIAMETER}px`, `${LARGE_CIRCLE_DIAMETER}px`);
       circleAnimation.fromTo('width', `${SMALL_CIRCLE_DIAMETER}px`, `${LARGE_CIRCLE_DIAMETER}px`);
+      this.pageChangeStart.emit({
+        rect: circleElement.getBoundingClientRect(),
+        originalOffset: originalOffset,
+        newOffset: newOffset,
+        diameter: LARGE_CIRCLE_DIAMETER
+      });
     } else {
       circleAnimation.before.addClass("inactive");
       circleAnimation.before.removeClass("selected");
@@ -101,7 +113,6 @@ export class PagingComponent {
         circleAnimation.fromTo('height', `${LARGE_CIRCLE_DIAMETER}px`, `${SMALL_CIRCLE_DIAMETER}px`);
         circleAnimation.fromTo('width', `${LARGE_CIRCLE_DIAMETER}px`, `${SMALL_CIRCLE_DIAMETER}px`);
       }
-
     }
     animation.fromTo(`translateX`, `${originalOffset}px`, `${newOffset}px`);
     animation.add(circleAnimation);
@@ -114,7 +125,18 @@ export interface PageObject {
   iconName?: string;
 }
 
+export interface PageChangedEvent {
+  rect: any,
+  originalOffset: number,
+  newOffset: number,
+  diameter: number
+}
+
 const MARGIN = 10;
 
 const SMALL_CIRCLE_DIAMETER = 20;
 const LARGE_CIRCLE_DIAMETER = 40;
+
+const BLUE_CLASS = "blue-text";
+const GREEN_CLASS = "green-text";
+const PURPLE_CLASS = "purple-text";

@@ -5,7 +5,7 @@ import {LandingPage} from './pages/landing';
 
 import {PROVIDERS} from './app-providers';
 
-import {TRANSITION_IN_KEY, TRANSITION_OUT_KEY} from './pages/custom-transition';
+import {TRANSITION_IN_KEY, TRANSITION_OUT_KEY} from './pages/body-content-transition';
 
 @Component({
   template: '<ion-nav [root]="rootPage"></ion-nav>'
@@ -23,6 +23,6 @@ export class MyApp {
 }
 
 ionicBootstrap(MyApp, PROVIDERS, {
-  pageEnter: TRANSITION_IN_KEY,
-  pageLeave: TRANSITION_OUT_KEY
+  bodyContentEnter: TRANSITION_IN_KEY,
+  bodyContentLeave: TRANSITION_OUT_KEY
 });

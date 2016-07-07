@@ -10,17 +10,41 @@
   color: #FFF;
 }
 
+.blue {
+  background-color: #6691B5;
+}
+
+.blue-text {
+  color: #6691B5;
+}
+
+.green {
+  background-color: #64B2B5;
+}
+
+.green-text {
+  color: #64B2B5;
+}
+
+.purple {
+  background-color: #9B90BC;
+}
+
+.purple-text {
+  color: #9B90BC;
+}
+
 .transparent-bg {
   background-color: transparent;
 }
 
 paging-component {
   display: block;
+  height: 100px;
 }
 
 .paging-container {
-  background-color: blue;
-  height: 100px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,6 +74,26 @@ paging-component {
 }
 
 .paging-icon {
-  color: blue;
   font-size: 30px;
+}
+
+body-content {
+  display: block;
+  height: 80%;
+  pointer-events: none;
+}
+
+.content-nav, .content-nav > ion-page{
+}
+
+.content-nav > .nav-decor {
+  display: none !important;
+}
+
+.content-container {
+  margin-top: 100px;
+}
+
+.content-icon {
+  font-size: 200px;
 }
