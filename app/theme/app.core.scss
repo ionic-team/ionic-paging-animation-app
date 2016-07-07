@@ -10,55 +10,46 @@
   color: #FFF;
 }
 
-.one {
-  background-color: #6691B5;
-  color: #FFF;
-}
-
-.two {
-  background-color: #64B2B5;
-  color: #FFF;
-}
-
-.three {
-  background-color: #9B90BC;
-  color: #FFF;
-}
-
-.content {
-  background-color: red;
-}
-
-.paged-content {
-  height: 80%;
-  color: #FFF;
-}
-
 .transparent-bg {
   background-color: transparent;
 }
 
-.large-icon {
-  margin-top: 25%;
-  font-size: 200px;
+paging-component {
+  display: block;
+}
+
+.paging-container {
+  background-color: blue;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paging-circle-wrapper {
+  transform-origin: bottom;
+  padding: 0px 10px 0px 10px;
+  display: inline-block;
 }
 
 .paging-circle {
-  display: inline-block;
-  margin: 0px 5px 0px 5px;
-  width: 30px;
-  height: 30px;
-  border: 3px solid #FFF;
+  height: 20px;
+  width: 20px;
   border-radius: 50%;
+  border: 3px solid #FFF;
+}
 
-  &.active{
-  }
+.inner-circle {
+  border-radius: inherit;
+  height: 100%;
+  background-color: #FFF;
+  opacity: 0.0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .inner {
-    height: 100%;
-    width: 100%;
-    border-radius: 50%;
-    background-color: #FFF;
-  }
-
+.paging-icon {
+  color: blue;
+  font-size: 30px;
 }
