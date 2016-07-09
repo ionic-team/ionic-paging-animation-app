@@ -86,7 +86,6 @@ export class PagingComponent {
       selectedItemCenterPoint = pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetLeft + (pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetWidth/2) + ( (LARGE_CIRCLE_DIAMETER - SMALL_CIRCLE_DIAMETER)) / 2;
     }
 
-
     let previousDistanceNeededToMove = this.currentAmountShiftedInPx;
     this.currentAmountShiftedInPx = centerPoint - selectedItemCenterPoint;
 
@@ -98,19 +97,20 @@ export class PagingComponent {
       let childAnimation = this.buildChildAnimation(newIndex, i, pagingCircleWrapperRef, previousDistanceNeededToMove, this.currentAmountShiftedInPx);
       animation.add(childAnimation);
 
-      if ( i === (newIndex - 1) ) {
-        // it's the selected index
-        if ( this.ignoreFirst ){
-          this.ignoreFirst = false;
+      if ( i === (this.previousIndex - 1) ) {
+
+        let centerX;
+        if ( this.previousIndex < newIndex ){
+          centerX = pagingCircleWrapperElements[this.previousIndex - 1].nativeElement.offsetLeft + SMALL_CIRCLE_DIAMETER/2 + ( (LARGE_CIRCLE_DIAMETER - SMALL_CIRCLE_DIAMETER)) / 2 + this.currentAmountShiftedInPx;
         }
         else{
-
-          let pageAnimationEvent = {
-            centerX: selectedItemCenterPoint + this.currentAmountShiftedInPx,
-            centerY: pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetTop + pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetHeight/2
-          };
-          this.pageChangeStart.emit(pageAnimationEvent);
+          centerX = pagingCircleWrapperElements[this.previousIndex - 1].nativeElement.offsetLeft + LARGE_CIRCLE_DIAMETER + this.currentAmountShiftedInPx;
         }
+        let pageAnimationEvent = {
+          centerX: centerX,
+          centerY: pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetTop + pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetHeight/2
+        };
+        this.pageChangeStart.emit(pageAnimationEvent);
       }
     }
 
