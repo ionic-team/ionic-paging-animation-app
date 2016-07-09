@@ -57,6 +57,7 @@ paging-component {
 }
 
 .paging-circle {
+  transform-origin: center;
   height: 20px;
   width: 20px;
   border-radius: 50%;
@@ -96,4 +97,16 @@ body-content {
 
 .content-icon {
   font-size: 200px;
+}
+
+
+.circle-animation-helper {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  //opacity: 0.0;
+  background-color: red;
 }
