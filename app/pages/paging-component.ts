@@ -20,8 +20,11 @@ import {ANIMATION_DURATION} from '../utils/constants';
 export class PagingComponent {
   @Input() pages: PageObject[];
   @Input() selectedIndex: number;
+  @Input() zoomCircleRef: ElementRef;
+  @Input() parentHeight: number;
+  @Input() parentWidth: number;
 
-  @Output() pageChangeStart: EventEmitter<PageChangedEvent> = new EventEmitter<PageChangedEvent>();
+  //@Output() pageChangeStart: EventEmitter<PageChangedEvent> = new EventEmitter<PageChangedEvent>();
   @Output() pageChangeComplete: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('container', {read: ElementRef}) container: ElementRef;
@@ -86,31 +89,52 @@ export class PagingComponent {
       selectedItemCenterPoint = pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetLeft + (pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetWidth/2) + ( (LARGE_CIRCLE_DIAMETER - SMALL_CIRCLE_DIAMETER)) / 2;
     }
 
+
     let previousDistanceNeededToMove = this.currentAmountShiftedInPx;
     this.currentAmountShiftedInPx = centerPoint - selectedItemCenterPoint;
 
     let animation = new Animation(this.container.nativeElement);
-    animation.fromTo('translateX', `${previousDistanceNeededToMove}px`, `${this.currentAmountShiftedInPx}px`);
+    //animation.fromTo('translateX', `${previousDistanceNeededToMove}px`, `${this.currentAmountShiftedInPx}px`);
 
     for ( let i = 0; i < pagingCircleWrapperElements.length; i++ ) {
       let pagingCircleWrapperRef = pagingCircleWrapperElements[i];
       let childAnimation = this.buildChildAnimation(newIndex, i, pagingCircleWrapperRef, previousDistanceNeededToMove, this.currentAmountShiftedInPx);
       animation.add(childAnimation);
 
-      if ( i === (this.previousIndex - 1) ) {
-
-        let centerX;
-        if ( this.previousIndex < newIndex ){
-          centerX = pagingCircleWrapperElements[this.previousIndex - 1].nativeElement.offsetLeft + SMALL_CIRCLE_DIAMETER/2 + ( (LARGE_CIRCLE_DIAMETER - SMALL_CIRCLE_DIAMETER)) / 2 + this.currentAmountShiftedInPx;
+      if ( i === (newIndex - 1) ) {
+        // it's the selected index
+        if ( this.ignoreFirst ){
+          this.ignoreFirst = false;
         }
         else{
-          centerX = pagingCircleWrapperElements[this.previousIndex - 1].nativeElement.offsetLeft + LARGE_CIRCLE_DIAMETER + this.currentAmountShiftedInPx;
+          this.updateStylesForElement(this.zoomCircleRef.nativeElement, newIndex);
+          let circleAnimation = new Animation(this.zoomCircleRef.nativeElement);
+          let animationOriginY = pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetTop;
+
+          let circleXOrigin;
+          if ( this.previousIndex < newIndex ) {
+            circleXOrigin = selectedItemCenterPoint;
+            circleAnimation.before.setStyles({'transform-origin': `center`});
+            circleAnimation.fromTo('translateX', `${circleXOrigin}px`, `${circleXOrigin - this.zoomCircleRef.nativeElement.clientWidth/2}px`);
+          }
+          else {
+            circleXOrigin = selectedItemCenterPoint - this.zoomCircleRef.nativeElement.clientWidth;
+            circleAnimation.before.setStyles({'transform-origin': `center`});
+            circleAnimation.fromTo('translateX', `${circleXOrigin}px`, `${circleXOrigin + this.zoomCircleRef.nativeElement.clientWidth/2}px`);
+          }
+
+          let scaleX = this.parentWidth/this.zoomCircleRef.nativeElement.clientWidth;
+          let scaleY = this.parentHeight/this.zoomCircleRef.nativeElement.clientHeight;
+          let scale = Math.max(scaleX, scaleY) * 2;
+          scale = Math.ceil(scale);
+
+          circleAnimation.fromTo('translateY', `${animationOriginY}px`, `${animationOriginY}px`);
+          circleAnimation.fromTo('opacity', `0.9`, `1.0`, true);
+          circleAnimation.fromTo('scale', `1.0`, `${scale}`, true);
+          //circleAnimation.duration(ANIMATION_DURATION);
+          //circleAnimation.play();
+          animation.add(circleAnimation);
         }
-        let pageAnimationEvent = {
-          centerX: centerX,
-          centerY: pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetTop + pagingCircleWrapperElements[newIndex - 1].nativeElement.offsetHeight/2
-        };
-        this.pageChangeStart.emit(pageAnimationEvent);
       }
     }
 
@@ -149,6 +173,24 @@ export class PagingComponent {
     animation.add(innerCircleAnimation);
     return animation;
   }
+
+  updateStylesForElement(element:HTMLElement, currentIndex: number) {
+    if ( currentIndex === 1 ) {
+      element.classList.add(BLUE_CLASS);
+      element.classList.remove(GREEN_CLASS);
+      element.classList.remove(PURPLE_CLASS);
+    }
+    else if ( currentIndex === 2 ) {
+      element.classList.remove(BLUE_CLASS);
+      element.classList.add(GREEN_CLASS);
+      element.classList.remove(PURPLE_CLASS);
+    }
+    else if ( currentIndex === 3 ) {
+      element.classList.remove(BLUE_CLASS);
+      element.classList.remove(GREEN_CLASS);
+      element.classList.add(PURPLE_CLASS);
+    }
+  }
 }
 
 export interface PageObject {
@@ -157,6 +199,7 @@ export interface PageObject {
 
 export interface PageChangedEvent {
   centerX: number,
+  transformX: number,
   centerY: number
 }
 
@@ -165,6 +208,6 @@ const MARGIN = 10;
 export const SMALL_CIRCLE_DIAMETER = 20;
 export const LARGE_CIRCLE_DIAMETER = 40;
 
-const BLUE_CLASS = "blue-text";
-const GREEN_CLASS = "green-text";
-const PURPLE_CLASS = "purple-text";
+const BLUE_CLASS = "blue";
+const GREEN_CLASS = "green";
+const PURPLE_CLASS = "purple";

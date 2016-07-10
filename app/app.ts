@@ -24,5 +24,6 @@ export class MyApp {
 
 ionicBootstrap(MyApp, PROVIDERS, {
   bodyContentEnter: TRANSITION_IN_KEY,
-  bodyContentLeave: TRANSITION_OUT_KEY
+  bodyContentLeave: TRANSITION_OUT_KEY,
+  prodMode: true
 });

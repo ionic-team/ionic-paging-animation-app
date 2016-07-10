@@ -15,7 +15,7 @@ import {ANIMATION_DURATION} from '../utils/constants';
   <ion-content #content class="content" text-center>
     <div class="circle-animation-helper" #circleAnimationHelper></div>
     <body-content [selectedIndex]="currentIndex"></body-content>
-    <paging-component [pages]="pages" [selectedIndex]="currentIndex" (pageChangeComplete)="pageChangeComplete()" (pageChangeStart)="pageChangeStart($event)"></paging-component>
+    <paging-component [pages]="pages" [selectedIndex]="currentIndex" (pageChangeComplete)="pageChangeComplete()" [zoomCircleRef]="circleElementRef" [parentHeight]="elementRef?.nativeElement.clientHeight" [parentWidth]="elementRef?.nativeElement.clientWidth"></paging-component>
   </ion-content>
   `
 })
@@ -81,8 +81,8 @@ export class LandingPage {
     let yRatio = this.elementRef.nativeElement.clientHeight / radius;
     let xRatio = this.elementRef.nativeElement.clientWidth / radius;
     let scale = Math.ceil(Math.max(yRatio, xRatio));
-    let animation = new Animation(elementRef.nativeElement);
 
+    let animation = new Animation(elementRef.nativeElement);
     let animationOriginX = event.centerX - elementRef.nativeElement.clientWidth/2;
     let animationOriginY = event.centerY - elementRef.nativeElement.clientHeight/2;
     animation.before.setStyles({'transform': `translate3d(${animationOriginX}px, ${animationOriginY}px, 0px)`, '-webkit-transform': `translate3d(${animationOriginX}px, ${animationOriginY}px, 0px)`});
