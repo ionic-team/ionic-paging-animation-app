@@ -48,6 +48,10 @@ export class LandingPage {
     let dragRecognizer = this.dragGestureRecognizerProvider.getGestureRecognizer(this.elementRef, {threshold: 30, direction: GestureDirection.HORIZONTAL});
     dragRecognizer.listen();
     dragRecognizer.onPanStart.subscribe( event => { this.handleSwipe(event) });
+
+    Promise.resolve().then( () => {
+      console.log("Boom city");
+    });
   }
 
   handleSwipe(event:HammerInput) {
@@ -64,43 +68,6 @@ export class LandingPage {
   pageChangeComplete() {
     let element = <HTMLElement> this.elementRef.nativeElement;
     this.updateStylesForElement(element);
-  }
-
-  pageChangeStart(event: PageChangedEvent) {
-    this.updateStylesForElement(this.circleElementRef.nativeElement);
-    this.doCircleAnimation(event, this.circleElementRef);
-  }
-
-  doCircleAnimation(event: PageChangedEvent, elementRef: ElementRef) {
-    /*let animation = new Animation(elementRef.nativeElement);
-    animation.fromTo("opacity", "0.3", "1.0", true);
-    let xOffset = event.rect.left - event.newOffset - CIRCLE_ANIMATION_DIAMETER/2;
-    animation.fromTo("translateX", `${event.rect.left}px`, `${event.rect.left}`, true);
-    animation.fromTo("translateY", `${event.rect.top}px`, `${event.rect.top}`, true);
-    animation.duration(ANIMATION_DURATION);
-    animation.play();
-    */
-
-    // figure out the scale we need to expand at to cover the entire screen
-    let radius = CIRCLE_ANIMATION_DIAMETER/2;
-    let yRatio = this.elementRef.nativeElement.clientHeight / radius;
-    let xRatio = this.elementRef.nativeElement.clientWidth / radius;
-    let scale = Math.ceil(Math.max(yRatio, xRatio));
-
-    let animation = new Animation(elementRef.nativeElement);
-    let animationOriginX = event.centerX - elementRef.nativeElement.clientWidth/2;
-    let animationOriginY = event.centerY - elementRef.nativeElement.clientHeight/2;
-    animation.before.setStyles({'transform': `translate3d(${animationOriginX}px, ${animationOriginY}px, 0px)`, '-webkit-transform': `translate3d(${animationOriginX}px, ${animationOriginY}px, 0px)`});
-
-
-    //animation.fromTo("opacity", "1.0", "1.0", true);
-    //animation.fromTo("scale", `${1.0}`, `${24}`, true);
-    //animation.fromTo("translateX", ``, `${event.rect.left}`);
-    //animation.fromTo("translateY", `${event.rect.top}px`, `${event.rect.top}`);
-
-    //animation.easing("ease-out");
-    //animation.duration(ANIMATION_DURATION);
-    animation.play();
   }
 
   updateStylesForElement(element:HTMLElement) {

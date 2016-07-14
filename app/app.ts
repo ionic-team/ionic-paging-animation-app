@@ -7,6 +7,8 @@ import {PROVIDERS} from './app-providers';
 
 import {TRANSITION_IN_KEY, TRANSITION_OUT_KEY} from './pages/body-content-transition';
 
+import * as shim from 'es6-shim';
+
 @Component({
   template: '<ion-nav [root]="rootPage"></ion-nav>'
 })
