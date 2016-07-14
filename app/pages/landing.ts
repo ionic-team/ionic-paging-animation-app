@@ -9,10 +9,13 @@ import {PagingComponent, PageChangedEvent, PageObject, SMALL_CIRCLE_DIAMETER, LA
 
 import {ANIMATION_DURATION} from '../utils/constants';
 
+import {v4} from 'node-uuid';
+
 @Component({
   directives: [BodyContent, PagingComponent],
   template: `
   <ion-content #content class="content" text-center>
+    <div>The guid is: {{guid}}</div>
     <div class="circle-animation-helper" #circleAnimationHelper></div>
     <body-content [selectedIndex]="currentIndex"></body-content>
     <paging-component [pages]="pages" [selectedIndex]="currentIndex" (pageChangeComplete)="pageChangeComplete()" [zoomCircleRef]="circleElementRef" [parentHeight]="elementRef?.nativeElement.clientHeight" [parentWidth]="elementRef?.nativeElement.clientWidth"></paging-component>
@@ -26,6 +29,7 @@ export class LandingPage {
 
   private pages: PageObject[];
   private currentIndex: number = MIN_INDEX;
+  private guid: string;
 
   constructor(private dragGestureRecognizerProvider: DragGestureRecognizerProvider) {
   }
@@ -37,6 +41,7 @@ export class LandingPage {
     tempPages.push({iconName: "ionitron"});
     this.pages = tempPages;
     this.pageChangeComplete();
+    this.guid = v4();
   }
 
   ionViewDidEnter() {
