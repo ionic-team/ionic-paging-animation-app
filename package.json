@@ -8,7 +8,7 @@
     "@angular/platform-browser-dynamic": "2.0.0-rc.3",
     "es6-shim": "^0.35.0",
     "hammerjs": "2.0.4",
-    "ionic-angular": "nightly",
+    "ionic-angular": "2.0.0-beta.10",
     "ionic-native": "1.3.2",
     "ionicons": "3.0.0",
     "reflect-metadata": "^0.1.3",
