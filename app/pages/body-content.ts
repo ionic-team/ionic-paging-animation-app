@@ -35,21 +35,18 @@ export class BodyContent {
     if ( this.previousIndex > this.selectedIndex ) {
       // it's a pop
       this.navController.pop({animation: TRANSITION_OUT_KEY});
-    }
-    else{
+    } else {
       // it's a push
       this.navController.push(this.getPageForIndex(this.selectedIndex), {}, {animation: TRANSITION_IN_KEY});
     }
   }
 
-  getPageForIndex(index:number) {
+  getPageForIndex(index: number) {
     if ( index === 0 ) {
       return PageOne;
-    }
-    else if ( index === 1 ) {
+    } else if ( index === 1 ) {
       return PageTwo;
-    }
-    else{
+    } else {
       return PageThree;
     }
   }

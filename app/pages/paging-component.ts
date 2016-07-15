@@ -42,15 +42,12 @@ export class PagingComponent {
 
     viewController.didEnter.subscribe( () => {
       this.ignoreFirst = true;
-      // size isn't set yet, so add a small timeout
-      //setTimeout( () => {
-        let callback = () => {
-          this.ngZone.run( () => {
-            this.initialized = true;
-          });
-        };
-        this.selectedIndexChanged(this.selectedIndex, callback, false);
-      //}, 300);
+      let callback = () => {
+        this.ngZone.run( () => {
+          this.initialized = true;
+        });
+      };
+      this.selectedIndexChanged(this.selectedIndex, callback, false);
     });
   }
 
@@ -66,26 +63,21 @@ export class PagingComponent {
         this.selectedIndexChanged(change.currentValue, callback, true);
       }
     }
-
-  }
-
-  ngAfterViewInit() {
-
   }
 
   selectedIndexChanged(newIndex: number, callback: () => any, doAnimation: boolean = true) {
-    let centerPoint = this.container.nativeElement.clientWidth/2;
+    let centerPoint = this.container.nativeElement.clientWidth / 2;
     let pagingCircleWrapperElements = this.queryList.toArray();
 
     let selectedItemCenterPoint;
     if ( this.previousIndex === -1 ) {
-      selectedItemCenterPoint = pagingCircleWrapperElements[newIndex].nativeElement.offsetLeft + (pagingCircleWrapperElements[newIndex].nativeElement.offsetWidth/2 + SMALL_CIRCLE_DIAMETER/2);
+      selectedItemCenterPoint = pagingCircleWrapperElements[newIndex].nativeElement.offsetLeft + (pagingCircleWrapperElements[newIndex].nativeElement.offsetWidth / 2 + SMALL_CIRCLE_DIAMETER / 2);
     }
+
     if ( this.previousIndex < newIndex ) {
-      selectedItemCenterPoint = pagingCircleWrapperElements[newIndex].nativeElement.offsetLeft + (pagingCircleWrapperElements[newIndex].nativeElement.offsetWidth/2);
-    }
-    else if ( this.previousIndex > newIndex ) {
-      selectedItemCenterPoint = pagingCircleWrapperElements[newIndex].nativeElement.offsetLeft + (pagingCircleWrapperElements[newIndex].nativeElement.offsetWidth/2);
+      selectedItemCenterPoint = pagingCircleWrapperElements[newIndex].nativeElement.offsetLeft + (pagingCircleWrapperElements[newIndex].nativeElement.offsetWidth / 2);
+    } else if ( this.previousIndex > newIndex ) {
+      selectedItemCenterPoint = pagingCircleWrapperElements[newIndex].nativeElement.offsetLeft + (pagingCircleWrapperElements[newIndex].nativeElement.offsetWidth / 2);
     }
 
 
@@ -103,26 +95,15 @@ export class PagingComponent {
       if ( i === newIndex ) {
         if ( this.ignoreFirst ) {
           this.ignoreFirst = false;
-        }
-        else{
+        } else {
           let circleAnimation = new Animation(this.zoomCircleRef.nativeElement);
-          let animationOriginY = pagingCircleWrapperElements[newIndex].nativeElement.offsetTop + SMALL_CIRCLE_DIAMETER/2;
+          let animationOriginY = pagingCircleWrapperElements[newIndex].nativeElement.offsetTop + SMALL_CIRCLE_DIAMETER / 2;
 
-          let circleXOrigin;
-          if ( this.previousIndex < newIndex ) {
-            circleXOrigin = selectedItemCenterPoint - SMALL_CIRCLE_DIAMETER/2;
-            circleAnimation.before.setStyles({'transform-origin': `center`});
-            circleAnimation.fromTo('translateX', `${circleXOrigin + previousDistanceNeededToMove}px`, `${circleXOrigin + this.currentAmountShiftedInPx}px`);
-          }
-          else {
-            circleXOrigin = selectedItemCenterPoint - SMALL_CIRCLE_DIAMETER/2;
-            circleAnimation.before.setStyles({'transform-origin': `center`});
-            circleAnimation.fromTo('translateX', `${circleXOrigin + previousDistanceNeededToMove}px`, `${circleXOrigin + this.currentAmountShiftedInPx}px`);
-          }
+          let circleXOrigin = selectedItemCenterPoint - SMALL_CIRCLE_DIAMETER / 2;
+          circleAnimation.fromTo('translateX', `${circleXOrigin + previousDistanceNeededToMove}px`, `${circleXOrigin + this.currentAmountShiftedInPx}px`);
 
-
-          let scaleX = this.parentElement.nativeElement.clientWidth/this.zoomCircleRef.nativeElement.clientWidth;
-          let scaleY = this.parentElement.nativeElement.clientHeight/this.zoomCircleRef.nativeElement.clientHeight;
+          let scaleX = this.parentElement.nativeElement.clientWidth / this.zoomCircleRef.nativeElement.clientWidth;
+          let scaleY = this.parentElement.nativeElement.clientHeight / this.zoomCircleRef.nativeElement.clientHeight;
           let scale = Math.max(scaleX, scaleY) * 2;
           scale = Math.ceil(scale);
 
@@ -145,24 +126,20 @@ export class PagingComponent {
     animation.play();
   }
 
-  buildChildAnimation(selectedIndex: number, currentIndex:number, pagingCircleWrapperRef:ElementRef, originalOffset:number, newOffset:number) {
+  buildChildAnimation(selectedIndex: number, currentIndex: number, pagingCircleWrapperRef: ElementRef, originalOffset: number, newOffset: number) {
     let animation = new Animation(pagingCircleWrapperRef.nativeElement);
     let circleElement = <HTMLElement> pagingCircleWrapperRef.nativeElement.children[0];
     let innerCircleElement = circleElement.children[0];
     let circleAnimation = new Animation(circleElement);
     let innerCircleAnimation = new Animation(innerCircleElement);
     if ( currentIndex === selectedIndex ) {
-      circleAnimation.before.addClass("selected");
-      circleAnimation.before.removeClass("inactive");
       innerCircleAnimation.fromTo('opacity', '0.0', '1.0');
       circleAnimation.fromTo('scale', `0.5`, `1.0`);
     } else {
-      circleAnimation.before.addClass("inactive");
-      circleAnimation.before.removeClass("selected");
       if ( currentIndex === this.previousIndex ) {
         innerCircleAnimation.fromTo('opacity', '1.0', '0.0');
         circleAnimation.fromTo('scale', `1.0`, `0.5`);
-      } else{
+      } else {
         circleAnimation.fromTo('scale', `0.5`, `0.5`);
       }
     }
@@ -174,12 +151,6 @@ export class PagingComponent {
 
 export interface PageObject {
   iconName?: string;
-}
-
-export interface PageChangedEvent {
-  centerX: number,
-  transformX: number,
-  centerY: number
 }
 
 export const SMALL_CIRCLE_DIAMETER = 20;

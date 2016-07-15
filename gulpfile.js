@@ -70,3 +70,12 @@ gulp.task('scripts', copyScripts);
 gulp.task('clean', function(){
   return del('www/build');
 });
+
+gulp.task('tslint', function() {
+  var tslint = require('gulp-tslint');
+  return gulp.src([
+      'app/**/*.ts',
+      '!app/**/*-spec.ts',
+    ]).pipe(tslint())
+      .pipe(tslint.report('verbose'));
+});
