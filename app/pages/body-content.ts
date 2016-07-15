@@ -20,7 +20,7 @@ export class BodyContent {
 
   private previousIndex: number;
 
-  constructor(){
+  constructor() {
   }
 
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
@@ -31,8 +31,8 @@ export class BodyContent {
     }
   }
 
-  processTransition(previousIndex: number, selectedIndex: number){
-    if ( this.previousIndex > this.selectedIndex ){
+  processTransition(previousIndex: number, selectedIndex: number) {
+    if ( this.previousIndex > this.selectedIndex ) {
       // it's a pop
       this.navController.pop({animation: TRANSITION_OUT_KEY});
     }
@@ -42,11 +42,11 @@ export class BodyContent {
     }
   }
 
-  getPageForIndex(index:number){
-    if ( index === 1 ){
+  getPageForIndex(index:number) {
+    if ( index === 0 ) {
       return PageOne;
     }
-    else if ( index === 2 ){
+    else if ( index === 1 ) {
       return PageTwo;
     }
     else{

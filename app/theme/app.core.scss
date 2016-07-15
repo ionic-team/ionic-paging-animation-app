@@ -78,12 +78,16 @@ paging-component {
 }
 
 body-content {
+  position: relative;
   display: block;
   height: 80%;
   pointer-events: none;
 }
 
 .content-nav, .content-nav > ion-page{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .content-nav > .nav-decor {
@@ -91,13 +95,13 @@ body-content {
 }
 
 .content-container {
-  margin-top: 100px;
+  margin-top: 50px;
+  max-width: 375px;
 }
 
 .content-icon {
   font-size: 200px;
 }
-
 
 .circle-animation-helper {
   position: absolute;

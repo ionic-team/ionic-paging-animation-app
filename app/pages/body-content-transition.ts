@@ -18,7 +18,7 @@ export class BodyContentInTransition extends Transition {
     enteringAnimation.fromTo('opacity', `0.0`, `1.0`);
 
     let exitingAnimation = null;
-    if ( leavingView.pageRef() ){
+    if ( leavingView.pageRef() ) {
       let exitingElement = <HTMLElement> leavingView.pageRef().nativeElement;
       let exitingContent = exitingElement.querySelector('.content-container');
       exitingAnimation = new Animation(exitingContent);
@@ -46,7 +46,7 @@ export class BodyContentOutTransition extends Transition {
     enteringAnimation.fromTo('opacity', `0.0`, `1.0`);
 
     let exitingAnimation = null;
-    if ( leavingView.pageRef() ){
+    if ( leavingView.pageRef() ) {
       let exitingElement = <HTMLElement> leavingView.pageRef().nativeElement;
       let exitingContent = exitingElement.querySelector('.content-container');
       exitingAnimation = new Animation(exitingContent);

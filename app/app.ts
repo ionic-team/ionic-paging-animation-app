@@ -3,8 +3,6 @@ import {Platform, ionicBootstrap} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {LandingPage} from './pages/landing';
 
-import {PROVIDERS} from './app-providers';
-
 import {TRANSITION_IN_KEY, TRANSITION_OUT_KEY} from './pages/body-content-transition';
 
 @Component({
@@ -22,7 +20,7 @@ export class MyApp {
   }
 }
 
-ionicBootstrap(MyApp, PROVIDERS, {
+ionicBootstrap(MyApp, [], {
   bodyContentEnter: TRANSITION_IN_KEY,
   bodyContentLeave: TRANSITION_OUT_KEY,
   prodMode: true
