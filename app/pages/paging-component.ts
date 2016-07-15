@@ -6,7 +6,7 @@ import { ANIMATION_DURATION } from '../utils/constants';
 @Component({
   selector: `paging-component`,
   template: `
-    <div class="circle-animation-helper" #circleAnimationHelper
+    <div class="circle-animation-helper" #zoomCircleRef
     [class.blue]="selectedIndex === 0"
     [class.green]="selectedIndex === 1"
     [class.purple]="selectedIndex === 2"></div>
@@ -27,7 +27,7 @@ export class PagingComponent {
 
   @Output() pageChangeComplete: EventEmitter<any> = new EventEmitter<any>();
 
-  @ViewChild('circleAnimationHelper', {read: ElementRef}) zoomCircleRef: ElementRef;
+  @ViewChild('zoomCircleRef', {read: ElementRef}) zoomCircleRef: ElementRef;
   @ViewChild('container', {read: ElementRef}) container: ElementRef;
   @ViewChildren('pagingCircleWrapperElements', {read: ElementRef}) queryList: QueryList<ElementRef>;
 
