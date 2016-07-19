@@ -25,7 +25,7 @@ export class PagingComponent {
   @Input() pages: PageObject[];
   @Input() selectedIndex: number;
 
-  @Output() pageChangeComplete: EventEmitter<any> = new EventEmitter<any>();
+  @Output() animationReady: EventEmitter<AnimationReadyEvent> = new EventEmitter<AnimationReadyEvent>();
 
   @ViewChild('zoomCircleRef', {read: ElementRef}) zoomCircleRef: ElementRef;
   @ViewChild('container', {read: ElementRef}) container: ElementRef;
@@ -58,9 +58,9 @@ export class PagingComponent {
       this.previousIndex = typeof change.previousValue === 'number' ? change.previousValue : -1;
       if ( this.initialized ) {
         let callback = () => {
-          self.pageChangeComplete.emit(null);
+          self.animationReady.emit(null);
         };
-        this.selectedIndexChanged(change.currentValue, callback, true);
+        this.selectedIndexChanged(change.currentValue, null, true);
       }
     }
   }
@@ -108,7 +108,7 @@ export class PagingComponent {
           scale = Math.ceil(scale);
 
           circleAnimation.fromTo('translateY', `${animationOriginY}px`, `${animationOriginY}px`);
-          circleAnimation.fromTo('opacity', `0.9`, `1.0`, true);
+          circleAnimation.fromTo('opacity', `0.9`, `1.0`);
           circleAnimation.fromTo('scale', `1.0`, `${scale}`, true);
 
           animation.add(circleAnimation);
@@ -123,7 +123,13 @@ export class PagingComponent {
     if ( callback ) {
       animation.onFinish(callback);
     }
-    animation.play();
+
+    if ( this.initialized ) {
+      this.animationReady.emit({ animation: animation});
+    }
+    else {
+      animation.play();
+    }
   }
 
   buildChildAnimation(selectedIndex: number, currentIndex: number, pagingCircleWrapperRef: ElementRef, originalOffset: number, newOffset: number) {
@@ -151,6 +157,10 @@ export class PagingComponent {
 
 export interface PageObject {
   iconName?: string;
+}
+
+export interface AnimationReadyEvent {
+  animation: Animation
 }
 
 export const SMALL_CIRCLE_DIAMETER = 20;

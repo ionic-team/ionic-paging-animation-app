@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 
 import {BodyContent} from './body-content';
-import {PagingComponent, PageObject} from './paging-component';
+import {AnimationReadyEvent, PagingComponent, PageObject} from './paging-component';
 
 @Component({
   directives: [BodyContent, PagingComponent],
@@ -11,13 +11,14 @@ import {PagingComponent, PageObject} from './paging-component';
     [class.green]="activeIndex === 1"
     [class.purple]="activeIndex === 2"
     (swipeleft)="swipeLeftToRight()" (swiperight)="swipeRightToLeft()">
-    <body-content [selectedIndex]="nextIndex"></body-content>
-    <paging-component [pages]="pages" [selectedIndex]="nextIndex" (pageChangeComplete)="pageChangeComplete()"></paging-component>
+    <body-content [selectedIndex]="activeIndex" #bodyContent></body-content>
+    <paging-component [pages]="pages" [selectedIndex]="nextIndex" (animationReady)="pageChangeAnimationReady($event)"></paging-component>
   </ion-content>
   `
 })
 export class LandingPage {
 
+  @ViewChild('bodyContent') bodyContent: BodyContent;
   private pages: PageObject[];
 
   private activeIndex: number = 0;
@@ -32,7 +33,7 @@ export class LandingPage {
     tempPages.push({iconName: 'cloud-outline'});
     tempPages.push({iconName: 'ionitron'});
     this.pages = tempPages;
-    this.pageChangeComplete();
+    this.pageChangeAnimationReady();
   }
 
   swipeLeftToRight() {
@@ -47,7 +48,9 @@ export class LandingPage {
     }
   }
 
-  pageChangeComplete() {
-    this.activeIndex = this.nextIndex;
+  pageChangeAnimationReady(event: AnimationReadyEvent = { animation: null}) {
+    this.bodyContent.processTransition(this.activeIndex, this.nextIndex, event.animation).then( () => {
+      this.activeIndex = this.nextIndex;
+    });
   }
 }

@@ -1,5 +1,5 @@
-import {Component, ElementRef, Input, SimpleChange, ViewChild} from '@angular/core';
-import {NavController} from 'ionic-angular';
+import {Component, Input, ViewChild} from '@angular/core';
+import {Animation, NavController} from 'ionic-angular';
 
 import {PageOne} from './content-one';
 import {PageTwo} from './content-two';
@@ -15,29 +15,15 @@ import {TRANSITION_IN_KEY, TRANSITION_OUT_KEY} from './body-content-transition';
 })
 export class BodyContent {
 
-  @Input() selectedIndex: number;
   @ViewChild('nav') navController: NavController;
 
-  private previousIndex: number;
-
-  constructor() {
-  }
-
-  ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
-    let change = changes['selectedIndex'];
-    if ( change ) {
-      this.previousIndex = change.previousValue;
-      this.processTransition(this.previousIndex, change.currentValue);
-    }
-  }
-
-  processTransition(previousIndex: number, selectedIndex: number) {
-    if ( this.previousIndex > this.selectedIndex ) {
+  processTransition(previousIndex: number, selectedIndex: number, animation: Animation) {
+    if ( previousIndex > selectedIndex ) {
       // it's a pop
-      this.navController.pop({animation: TRANSITION_OUT_KEY});
+      return this.navController.pop({ animation: TRANSITION_OUT_KEY, ev: { animation: animation } });
     } else {
       // it's a push
-      this.navController.push(this.getPageForIndex(this.selectedIndex), {}, {animation: TRANSITION_IN_KEY});
+      return this.navController.push(this.getPageForIndex(selectedIndex), {}, { animation: TRANSITION_IN_KEY, ev: { animation: animation } });
     }
   }
 
