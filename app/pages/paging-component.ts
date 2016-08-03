@@ -126,8 +126,7 @@ export class PagingComponent {
 
     if ( this.initialized ) {
       this.animationReady.emit({ animation: animation});
-    }
-    else {
+    } else {
       animation.play();
     }
   }
@@ -160,7 +159,7 @@ export interface PageObject {
 }
 
 export interface AnimationReadyEvent {
-  animation: Animation
+  animation: Animation;
 }
 
 export const SMALL_CIRCLE_DIAMETER = 20;

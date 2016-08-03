@@ -33,7 +33,7 @@ export class BodyContentInTransition extends Transition {
     if ( exitingAnimation ) {
       this.add(exitingAnimation);
     }
-    if ( opts.ev && opts.ev.animation ){
+    if ( opts.ev && opts.ev.animation ) {
       this.add(opts.ev.animation);
     }
   }
@@ -65,7 +65,7 @@ export class BodyContentOutTransition extends Transition {
       this.add(exitingAnimation);
     }
 
-    if ( opts.ev && opts.ev.animation ){
+    if ( opts.ev && opts.ev.animation ) {
       this.add(opts.ev.animation);
     }
   }
